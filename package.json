@@ -1,16 +1,9 @@
 {
   "name": "hapi-directory-view",
-  "version": "1.0.0",
   "description": "Serve up an entire directory of templates in hapi",
-  "main": "index.js",
-  "keywords": [
-    "hapi",
-    "directory",
-    "template",
-    "view"
-  ],
+  "version": "1.0.0",
   "author": "Gar <gar@comrade.us>",
-  "license": "MIT",
+  "bugs": "https://github.com/wraithgar/hapi-directory-view/issues",
   "dependencies": {
     "async": "^0.9.0"
   },
@@ -20,5 +13,18 @@
     "jade": "^1.5.0",
     "jshint": "^2.5.3",
     "precommit-hook": "^1.0.7"
+  },
+  "homepage": "https://github.com/wraithgar/hapi-directory-view",
+  "keywords": [
+    "hapi",
+    "directory",
+    "template",
+    "view"
+  ],
+  "license": "MIT",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wraithgar/hapi-directory-view.git"
   }
 }

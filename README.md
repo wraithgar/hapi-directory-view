@@ -2,4 +2,42 @@
 
 Serve up an entire directory of templates in hapi
 
-See example.js for now
+
+## Use
+
+```javascript
+var Hapi = require('hapi');
+var Jade = require('jade');
+var exampleConfig = {
+    url: '/', //URL to serve at
+    index: 'home', //Optional filename to serve as index / base of url
+    views: {
+        engines: {
+            jade: Jade
+        },
+        isCached: false,
+        path: './views' //This path is read and served
+    }
+};
+
+var server = new Hapi.Server(3000);
+
+server.pack.register([
+    { plugin: require('./'), options: exampleConfig }
+], function (err) {
+    if (err) { throw err; }
+    server.start(function (err) {
+        if (err) { throw err; }
+        console.log('example running on port', server.info.port);
+    });
+});
+```
+
+This is a hapi plugin, the config takes three parameters:
+
+- `url` is the url to serve the templates from, defaults to `/`
+- `index` is an optional template name to serve at the base of the `url`
+- `views` is a view config for this plugin.  The path given will be the
+  directory that this module walks through to serve each template file
+it finds in it, provided the extension of that file matches one found in
+the `engines` parameter inside `views`
