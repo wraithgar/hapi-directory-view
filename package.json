@@ -1,7 +1,7 @@
 {
   "name": "hapi-directory-view",
   "description": "Serve up an entire directory of templates in hapi",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "Gar <gar@comrade.us>",
   "bugs": "https://github.com/wraithgar/hapi-directory-view/issues",
   "dependencies": {
