@@ -18,6 +18,9 @@ lab.experiment('default tests', function () {
                     },
                     isCached: false,
                     path: __dirname + '/../views'
+                },
+                routeConfigs: {
+                    swing: {handler: { view: { context: { swing: 'test swing' } } } }
                 }
             }
         }], function _packRegistered(err) {
@@ -35,6 +38,26 @@ lab.experiment('default tests', function () {
         }, function _getYard(res) {
             Lab.expect(res.statusCode, 'response code').to.equal(200);
             Lab.expect(res.payload, 'response body').to.include('<h3>This is my yard');
+            done();
+        });
+    });
+    lab.test('serves index file', function (done) {
+        server.inject({
+            method: 'get',
+            url: '/'
+        }, function _getYard(res) {
+            Lab.expect(res.statusCode, 'response code').to.equal(200);
+            Lab.expect(res.payload, 'response body').to.include('<h1>Home sweet home');
+            done();
+        });
+    });
+    lab.test('serves template context', function (done) {
+        server.inject({
+            method: 'get',
+            url: '/swing'
+        }, function _getYard(res) {
+            Lab.expect(res.statusCode, 'response code').to.equal(200);
+            Lab.expect(res.payload, 'response body').to.include('<h3>test swing');
             done();
         });
     });

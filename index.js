@@ -2,28 +2,37 @@ var fs = require('fs');
 var path = require('path');
 var async = require('async');
 
-exports.register = function directoryView(plugin, config, next) {
+exports.register = function directoryView(plugin, pluginConfig, next) {
     var servers, engines, templatePath;
-    config.log = plugin.log;
-    if (!config.url) { config.url = '/'; }
-    servers = (config.labels) ? plugin.select(config.labels) : plugin;
-    servers.views(config.views);
-    engines = Object.keys(config.views.engines);
-    if (config.views.path[0] === '/') {
-        templatePath = config.views.path;
-    } else {
-        templatePath = path.join(path.dirname(require.main.filename), config.views.path);
+
+    //Allow any predefined things to remain, set view only if not explicitly set for this file
+    function makeConfig(fileName, routeConfig) {
+        routeConfig = routeConfig || {};
+        routeConfig.handler = routeConfig.handler || {};
+        routeConfig.handler.view = routeConfig.handler.view || {};
+        routeConfig.handler.view.template = routeConfig.handler.view.template || fileName;
+        return routeConfig;
     }
 
-    if (config.index) {
+    pluginConfig.log = plugin.log;
+    if (!pluginConfig.routeConfigs) {
+        pluginConfig.routeConfigs = {};
+    }
+    if (!pluginConfig.url) { pluginConfig.url = '/'; }
+    servers = (pluginConfig.labels) ? plugin.select(pluginConfig.labels) : plugin;
+    servers.views(pluginConfig.views);
+    engines = Object.keys(pluginConfig.views.engines);
+    if (pluginConfig.views.path[0] === '/') {
+        templatePath = pluginConfig.views.path;
+    } else {
+        templatePath = path.join(path.dirname(require.main.filename), pluginConfig.views.path);
+    }
+
+    if (pluginConfig.index) {
         servers.route({
             method: 'get',
-            path: config.url,
-            config: {
-                handler: function (request, reply) {
-                    reply.view(config.index);
-                }
-            }
+            path: pluginConfig.url,
+            config: makeConfig(pluginConfig.index, pluginConfig.routeConfigs[pluginConfig.index])
         });
     }
 
@@ -34,18 +43,13 @@ exports.register = function directoryView(plugin, config, next) {
         }
         async.each(files, function statFile(file, statDone) {
             fs.stat(path.join(templatePath, file), function addHandler(err, stats) {
-                var fileName = file.split('.')[0];
                 if (err) { return statDone; }
-                if (stats.isFile() && fileName && (fileName !== config.index) && (engines.indexOf(path.extname(file).slice(1)) > -1)) {
-                    console.log('routing', config.url + fileName);
+                var fileName = file.split('.')[0];
+                if (stats.isFile() && fileName && (fileName !== pluginConfig.index) && (engines.indexOf(path.extname(file).slice(1)) > -1)) {
                     servers.route({
                         method: 'get',
-                        path: config.url + fileName,
-                        config: {
-                            handler: function (request, reply) {
-                                reply.view(fileName);
-                            }
-                        }
+                        path: pluginConfig.url + fileName,
+                        config: makeConfig(fileName, pluginConfig.routeConfigs[fileName])
                     });
                 } else if (stats.isDirectory()) {
                     plugin.log(['warning', 'plugin', 'hapi-directory-view'], 'Cannot traverse directories, "' + file + '" ignored');
