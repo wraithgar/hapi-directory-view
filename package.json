@@ -12,6 +12,7 @@
     "hapi": "^6.5.1",
     "jade": "^1.5.0",
     "jshint": "^2.5.3",
+    "lab": "^4.0.2",
     "precommit-hook": "^1.0.7"
   },
   "homepage": "https://github.com/wraithgar/hapi-directory-view",

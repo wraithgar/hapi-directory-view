@@ -2,7 +2,7 @@ var Hapi = require('hapi');
 var Jade = require('jade');
 var Good = require('good');
 var exampleConfig = {
-    url: '/', //URL to serve at
+    url: '/test/', //URL to serve at
     index: 'home', //Optional filename to serve as index / base of url
     views: {
         engines: {

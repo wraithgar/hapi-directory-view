@@ -1,2 +1,6 @@
 example.js
 views/
+.jshintignore
+.jshintrc
+test
+Makefile
