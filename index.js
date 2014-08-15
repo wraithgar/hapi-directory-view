@@ -18,7 +18,8 @@ exports.register = function directoryView(plugin, pluginConfig, next) {
     if (!pluginConfig.routeConfigs) {
         pluginConfig.routeConfigs = {};
     }
-    if (!pluginConfig.url) { pluginConfig.url = '/'; }
+    if (!pluginConfig.url) { pluginConfig.url = ''; }
+    if (pluginConfig.url.slice(-1) === '/') { pluginConfig.url = pluginConfig.url.slice(0, -1); }
     servers = (pluginConfig.labels) ? plugin.select(pluginConfig.labels) : plugin;
     servers.views(pluginConfig.views);
     engines = Object.keys(pluginConfig.views.engines);
@@ -31,7 +32,7 @@ exports.register = function directoryView(plugin, pluginConfig, next) {
     if (pluginConfig.index) {
         servers.route({
             method: 'get',
-            path: pluginConfig.url,
+            path: pluginConfig.url + '/',
             config: makeConfig(pluginConfig.index, pluginConfig.routeConfigs[pluginConfig.index])
         });
     }
@@ -48,7 +49,7 @@ exports.register = function directoryView(plugin, pluginConfig, next) {
                 if (stats.isFile() && fileName && (fileName !== pluginConfig.index) && (engines.indexOf(path.extname(file).slice(1)) > -1)) {
                     servers.route({
                         method: 'get',
-                        path: pluginConfig.url + fileName,
+                        path: pluginConfig.url + '/' + fileName,
                         config: makeConfig(fileName, pluginConfig.routeConfigs[fileName])
                     });
                 } else if (stats.isDirectory()) {
